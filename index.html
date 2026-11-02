@@ -17,7 +17,7 @@
     <header class="top home-top">
       <div class="brand-mark" aria-hidden="true">Aa</div>
       <div class="brand-copy">
-        <p class="eyebrow">30-SECOND WORD GAME</p>
+        <p class="eyebrow">WORD GAME</p>
         <h1>クリエイゴ</h1>
       </div>
       <div class="top-badge"><span class="live-dot"></span> WORD RUSH</div>
@@ -27,12 +27,31 @@
       <div class="hero-copy">
         <p class="eyebrow">THINK FAST. MAKE WORDS.</p>
         <h2>ひらめきで、<br><span>英単語をつくれ。</span></h2>
-        <p class="home-lead">ランダムに配られる8つのアルファベット。使える文字を組み合わせて、30秒以内にできるだけ多くの英単語を作ろう。</p>
-        <a class="home-start-btn" href="game.html">
-          <span><small>READY TO PLAY?</small><strong>ゲームを始める</strong></span>
+        <p class="home-lead">ランダムに配られるアルファベットを組み合わせて、制限時間内にできるだけ多くの英単語を作ろう。文字数と時間を選んで挑戦！</p>
+        <section class="mode-selectors" aria-label="ゲーム設定">
+          <div class="mode-group">
+            <div class="mode-heading"><strong>アルファベットの数</strong><span>LETTER COUNT</span></div>
+            <div class="choice-row" id="letter-options">
+              <button class="mode-option is-selected" type="button" data-letters="8" aria-pressed="true">8<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="10" aria-pressed="false">10<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="12" aria-pressed="false">12<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="14" aria-pressed="false">14<span>文字</span></button>
+            </div>
+          </div>
+          <div class="mode-group">
+            <div class="mode-heading"><strong>制限時間</strong><span>TIME LIMIT</span></div>
+            <div class="choice-row" id="time-options">
+              <button class="mode-option is-selected" type="button" data-time="30" aria-pressed="true">30<span>秒</span></button>
+              <button class="mode-option" type="button" data-time="45" aria-pressed="false">45<span>秒</span></button>
+              <button class="mode-option" type="button" data-time="60" aria-pressed="false">60<span>秒</span></button>
+            </div>
+          </div>
+        </section>
+        <a id="home-start-link" class="home-start-btn" href="game.html?letters=8&amp;time=30">
+          <span><small>READY TO PLAY?</small><strong>この設定でゲーム開始</strong></span>
           <span class="home-start-arrow" aria-hidden="true">→</span>
         </a>
-        <div class="home-best">YOUR BEST <strong id="home-best-score">0</strong><span>POINTS</span></div>
+        <div class="home-best">この設定の最高得点 <strong id="home-best-score">0</strong><span>POINTS</span></div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="art-glow"></div>
@@ -54,8 +73,8 @@
         <article class="info-card">
           <span class="step-number">01</span>
           <div class="info-icon">Aa</div>
-          <h3>8文字が配られる</h3>
-          <p>母音2文字と子音6文字。毎回ランダムな組み合わせ！</p>
+          <h3>文字がランダムに配られる</h3>
+          <p>8・10・12・14文字から選択。母音と子音がランダムに配られる！</p>
         </article>
         <article class="info-card">
           <span class="step-number">02</span>
@@ -66,8 +85,8 @@
         <article class="info-card">
           <span class="step-number">03</span>
           <div class="info-icon">30</div>
-          <h3>30秒で得点を稼ぐ</h3>
-          <p>辞書にある3文字以上の単語を完成させて、どんどん得点しよう。</p>
+          <h3>時間内に得点を稼ぐ</h3>
+          <p>30・45・60秒から選択。辞書にある3文字以上の単語を完成させよう。</p>
         </article>
       </div>
     </section>
