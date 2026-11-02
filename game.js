@@ -244,6 +244,7 @@
     playing = true;
 
     $("result-panel").hidden = true;
+    $("keyboard-dock").hidden = false;
     $("ready-panel").hidden = true;
     $("play-area").hidden = false;
     $("time-value").textContent = "30";
@@ -272,6 +273,7 @@
     timerBar.style.width = "0%";
     timerTrack.setAttribute("aria-valuenow", "0");
     renderKeyboard();
+    $("keyboard-dock").hidden = true;
     updateDraftDisplay();
 
     $("final-score").textContent = String(score);
