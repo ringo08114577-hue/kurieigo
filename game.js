@@ -4,8 +4,17 @@
   const $ = (id) => document.getElementById(id);
   const VOWELS = "AEIOU".split("");
   const CONSONANTS = "BCDFGHJKLMNPQRSTVWXYZ".split("");
-  const ROUND_MS = 30_000;
-  const BEST_KEY = "creigeo-best-score-v1";
+  const LETTER_OPTIONS = [8, 10, 12, 14];
+  const TIME_OPTIONS = [30, 45, 60];
+  const params = new URLSearchParams(window.location.search);
+  const requestedLetters = Number(params.get("letters"));
+  const requestedTime = Number(params.get("time"));
+  const LETTER_COUNT = LETTER_OPTIONS.includes(requestedLetters) ? requestedLetters : 8;
+  const ROUND_SECONDS = TIME_OPTIONS.includes(requestedTime) ? requestedTime : 30;
+  const ROUND_MS = ROUND_SECONDS * 1000;
+  const VOWEL_COUNT = Math.round(LETTER_COUNT / 4);
+  const CONSONANT_COUNT = LETTER_COUNT - VOWEL_COUNT;
+  const BEST_KEY = "creigeo-best-score-" + LETTER_COUNT + "-" + ROUND_SECONDS;
   const POINTS = (length) => length < 3 ? 0 : 2 * length - 5;
 
   const keyboard = $("letter-keyboard");
@@ -22,7 +31,7 @@
   let acceptedWords = [];
   let score = 0;
   let bestScore = readBestScore();
-  let seconds = 30;
+  let seconds = ROUND_SECONDS;
   let timerId = null;
   let deadline = 0;
   let playing = false;
@@ -31,10 +40,15 @@
 
   function readBestScore() {
     try {
-      return Number(localStorage.getItem(BEST_KEY)) || 0;
+      const stored = localStorage.getItem(BEST_KEY);
+      if (stored !== null) return Number(stored) || 0;
+      if (LETTER_COUNT === 8 && ROUND_SECONDS === 30) {
+        return Number(localStorage.getItem("creigeo-best-score-v1")) || 0;
+      }
     } catch {
       return 0;
     }
+    return 0;
   }
 
   function saveBestScore(value) {
@@ -55,8 +69,8 @@
   }
 
   function makeLetters() {
-    const vowels = shuffle(VOWELS).slice(0, 2);
-    const consonants = shuffle(CONSONANTS).slice(0, 6);
+    const vowels = shuffle(VOWELS).slice(0, VOWEL_COUNT);
+    const consonants = shuffle(CONSONANTS).slice(0, CONSONANT_COUNT);
     return shuffle([...vowels, ...consonants]);
   }
 
@@ -94,17 +108,19 @@
 
   function renderKeyboard() {
     keyboard.replaceChildren();
-    letters.forEach((letter, index) => {
+    const columns = LETTER_COUNT === 8 ? 8 : Math.ceil(LETTER_COUNT / 2);
+    keyboard.style.setProperty("--keyboard-columns", String(columns));
+    letters.forEach((letter) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "letter-key";
       button.textContent = letter;
       button.disabled = !playing;
       button.setAttribute("aria-label", letter + " を追加");
-      button.dataset.index = String(index);
       button.addEventListener("click", () => addLetter(letter));
       keyboard.appendChild(button);
     });
+    $("keyboard-count-label").textContent = LETTER_COUNT + " LETTERS";
   }
 
   function addLetter(letter) {
@@ -173,10 +189,9 @@
       showMessage("3文字以上の単語が必要だよ。", "bad");
       return;
     }
-    // Reusing one of the eight given letter types is intentionally unlimited.
     const available = new Set(letters.map((letter) => letter.toLowerCase()));
     if (![...word].every((letter) => available.has(letter))) {
-      showMessage("配られた8種類の文字だけで作ってね！", "bad");
+      showMessage("配られた文字だけで作ってね！", "bad");
       return;
     }
     if (seenWords.has(word)) {
@@ -238,7 +253,7 @@
     seenWords = new Set();
     acceptedWords = [];
     score = 0;
-    seconds = 30;
+    seconds = ROUND_SECONDS;
     newRecordThisRound = false;
     deadline = Date.now() + ROUND_MS;
     playing = true;
@@ -247,9 +262,9 @@
     $("keyboard-dock").hidden = false;
     $("ready-panel").hidden = true;
     $("play-area").hidden = false;
-    $("time-value").textContent = "30";
+    $("time-value").textContent = String(ROUND_SECONDS);
     timerBar.style.width = "100%";
-    timerTrack.setAttribute("aria-valuenow", "30");
+    timerTrack.setAttribute("aria-valuenow", String(ROUND_SECONDS));
     $("accepted-words").replaceChildren();
     const empty = document.createElement("span");
     empty.className = "empty-words";
@@ -323,6 +338,12 @@
     }
   });
 
+  $("mode-label").textContent = LETTER_COUNT + "文字 · " + ROUND_SECONDS + "秒";
+  $("mode-description").textContent = LETTER_COUNT + "文字が配られて、" + ROUND_SECONDS + "秒のチャレンジが始まるよ。";
+  $("time-value").textContent = String(ROUND_SECONDS);
+  timerTrack.setAttribute("aria-valuemax", String(ROUND_SECONDS));
+  timerTrack.setAttribute("aria-valuenow", String(ROUND_SECONDS));
   $("best-score").textContent = String(bestScore);
+  $("keyboard-count-label").textContent = LETTER_COUNT + " LETTERS";
   loadDictionary();
 })();
