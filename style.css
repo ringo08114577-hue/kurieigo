@@ -224,3 +224,16 @@ a{color:inherit;text-decoration:none}
   .mode-selectors{max-width:none;gap:13px}
   .mode-option{min-height:46px}
 }
+
+/* End-of-round word examples */
+.possible-words-section{margin:18px 0 22px;padding:16px;border:1px solid #2e3c56;border-radius:16px;background:#121a2c}
+.possible-words-section h2{margin:14px 0 8px;font-size:15px;color:#e8effb}
+.possible-words-section h2:first-child{margin-top:0}
+.final-letters{margin:0;padding:11px 12px;border-radius:10px;background:#202e45;color:var(--lime);font-size:15px;font-weight:900;letter-spacing:.12em;overflow-wrap:anywhere}
+.possible-words-note{margin:0 0 10px;color:#91a0b9;font-size:11px;line-height:1.6}
+.possible-words{display:flex;flex-wrap:wrap;gap:7px}
+.possible-word{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #34435f;border-radius:9px;background:#1b2940;color:#edf3ff;font-weight:800;font-size:13px}
+.possible-word b{color:var(--lime);font-size:10px;white-space:nowrap}
+.possible-word.already-found{border-color:#a8d45c;background:#26371f}
+.possible-word.already-found::after{content:"作成済み";font-size:9px;color:#c5f36b;white-space:nowrap}
+@media(max-width:480px){.possible-words-section{padding:12px}.possible-word{padding:7px 8px;font-size:12px}}
