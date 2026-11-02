@@ -16,7 +16,7 @@
     <header class="game-top">
       <a class="back-home" href="index.html" aria-label="ホームに戻る">← <span>ホーム</span></a>
       <div class="game-brand"><span class="mini-mark">Aa</span><strong>クリエイゴ</strong></div>
-      <div id="dictionary-status" class="dictionary-status">辞書を読み込み中…</div>
+      <div class="game-top-right"><div id="mode-label" class="mode-label">8文字 · 30秒</div><div id="dictionary-status" class="dictionary-status">辞書を読み込み中…</div></div>
     </header>
 
     <section class="game-stats" aria-label="ゲーム状況">
@@ -45,7 +45,7 @@
       <div id="ready-panel" class="ready-panel">
         <p class="eyebrow">ARE YOU READY?</p>
         <h1>文字を選んで、<br><span>単語を作ろう。</span></h1>
-        <p>スタートすると8文字が配られて、30秒のチャレンジが始まるよ。</p>
+        <p id="mode-description">8文字が配られて、30秒のチャレンジが始まるよ。</p>
         <button id="start-btn" class="main-action" type="button" disabled>
           <span id="start-label">辞書を読み込み中…</span><b aria-hidden="true">→</b>
         </button>
@@ -86,7 +86,7 @@
 
     <section id="keyboard-dock" class="keyboard-dock" aria-label="アルファベット入力パネル" hidden>
       <div class="keyboard-caption">
-        <span>LETTERS</span>
+        <span id="keyboard-count-label">8 LETTERS</span>
         <span>タップして文字を追加 <b>· 何度でもOK</b></span>
       </div>
       <div id="letter-keyboard" class="letter-keyboard">
