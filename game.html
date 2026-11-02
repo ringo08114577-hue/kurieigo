@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101426">
+  <title>プレイ | クリエイゴ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body class="game-page">
+  <main class="game-shell">
+    <header class="game-top">
+      <a class="back-home" href="index.html" aria-label="ホームに戻る">← <span>ホーム</span></a>
+      <div class="game-brand"><span class="mini-mark">Aa</span><strong>クリエイゴ</strong></div>
+      <div id="dictionary-status" class="dictionary-status">辞書を読み込み中…</div>
+    </header>
+
+    <section class="game-stats" aria-label="ゲーム状況">
+      <div class="game-stat time-stat">
+        <span>TIME</span>
+        <strong><b id="time-value">30</b><small>秒</small></strong>
+      </div>
+      <div class="game-stat">
+        <span>SCORE</span>
+        <strong id="score">0</strong>
+      </div>
+      <div class="game-stat">
+        <span>WORDS</span>
+        <strong id="word-count">0</strong>
+      </div>
+      <div class="game-stat best-stat">
+        <span>BEST</span>
+        <strong id="best-score">0</strong>
+      </div>
+    </section>
+    <div class="timer-track" role="progressbar" aria-label="残り時間" aria-valuemin="0" aria-valuemax="30" aria-valuenow="30">
+      <div id="timer-bar" class="timer-fill"></div>
+    </div>
+
+    <section class="game-center">
+      <div id="ready-panel" class="ready-panel">
+        <p class="eyebrow">ARE YOU READY?</p>
+        <h1>文字を選んで、<br><span>単語を作ろう。</span></h1>
+        <p>スタートすると8文字が配られて、30秒のチャレンジが始まるよ。</p>
+        <button id="start-btn" class="main-action" type="button" disabled>
+          <span id="start-label">辞書を読み込み中…</span><b aria-hidden="true">→</b>
+        </button>
+      </div>
+
+      <div id="play-area" class="play-area" hidden>
+        <p class="eyebrow">YOUR WORD</p>
+        <div id="word-display" class="word-display" aria-label="作成中の単語">
+          <span class="word-placeholder">下の文字をタップ！</span>
+        </div>
+        <div class="word-tools">
+          <button id="backspace-btn" class="tool-btn" type="button" disabled>⌫ 1文字戻す</button>
+          <button id="clear-btn" class="tool-btn" type="button" disabled>全部消す</button>
+        </div>
+        <p id="feedback" class="game-feedback" aria-live="polite">下の文字をタップして単語を作ろう。</p>
+        <div class="accepted-area">
+          <div class="accepted-heading"><strong>今回の単語</strong><span id="accepted-total">0 WORDS</span></div>
+          <div id="accepted-words" class="accepted-words">
+            <span class="empty-words">正解した単語がここに並ぶよ。</span>
+          </div>
+        </div>
+      </div>
+
+      <section id="result-panel" class="result-panel" hidden>
+        <p class="eyebrow">TIME'S UP</p>
+        <h1>ゲーム終了！</h1>
+        <p class="result-score"><span id="final-score">0</span><small>点</small></p>
+        <p id="final-summary" class="final-summary"></p>
+        <div id="new-record" class="new-record" hidden>NEW BEST SCORE!</div>
+        <h2>今回の単語</h2>
+        <div id="final-words" class="final-words"></div>
+        <button id="again-btn" class="main-action" type="button">
+          <span>もう一度プレイ</span><b aria-hidden="true">↻</b>
+        </button>
+        <a class="result-home-link" href="index.html">ホームに戻る</a>
+      </section>
+    </section>
+
+    <section class="keyboard-dock" aria-label="アルファベット入力パネル">
+      <div class="keyboard-caption">
+        <span>LETTERS</span>
+        <span>タップして文字を追加 <b>· 何度でもOK</b></span>
+      </div>
+      <div id="letter-keyboard" class="letter-keyboard">
+        <button class="letter-key" type="button" disabled aria-label="文字 1">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 2">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 3">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 4">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 5">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 6">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 7">?</button>
+        <button class="letter-key" type="button" disabled aria-label="文字 8">?</button>
+      </div>
+      <button id="submit-btn" class="submit-word-btn" type="button" disabled>この単語で決定 <span>✓</span></button>
+    </section>
+
+    <footer class="game-footer"><span>クリエイゴ</span><span>30 SECOND WORD CHALLENGE</span></footer>
+  </main>
+</body>
+</html>
