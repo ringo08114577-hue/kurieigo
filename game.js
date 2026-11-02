@@ -8,19 +8,16 @@
   const BEST_KEY = "creigeo-best-score-v1";
   const POINTS = (length) => length < 3 ? 0 : 2 * length - 5;
 
-  const lettersEl = $("letters");
-  const input = $("word-input");
-  const form = $("answer-form");
-  const startBtn = $("start-btn");
-  const submitBtn = $("submit-btn");
+  const keyboard = $("letter-keyboard");
+  const wordDisplay = $("word-display");
   const feedback = $("feedback");
   const timerBar = $("timer-bar");
   const timerTrack = document.querySelector(".timer-track");
   const dictionaryStatus = $("dictionary-status");
-  const acceptedWordsEl = $("accepted-words");
 
   let dictionary = new Set();
   let letters = [];
+  let wordDraft = "";
   let seenWords = new Set();
   let acceptedWords = [];
   let score = 0;
@@ -44,7 +41,7 @@
     try {
       localStorage.setItem(BEST_KEY, String(value));
     } catch {
-      // Private browsing may block local storage; the game still works.
+      // The game remains playable if local storage is unavailable.
     }
   }
 
@@ -63,19 +60,9 @@
     return shuffle([...vowels, ...consonants]);
   }
 
-  function renderLetters() {
-    lettersEl.replaceChildren();
-    letters.forEach((letter) => {
-      const tile = document.createElement("span");
-      tile.className = "letter";
-      tile.textContent = letter;
-      lettersEl.appendChild(tile);
-    });
-  }
-
   function showMessage(text, kind = "") {
     feedback.textContent = text;
-    feedback.className = "feedback" + (kind ? " " + kind : "");
+    feedback.className = "game-feedback" + (kind ? " " + kind : "");
   }
 
   function updateStats() {
@@ -85,21 +72,80 @@
     $("accepted-total").textContent = acceptedWords.length + " WORDS";
   }
 
+  function updateDraftDisplay() {
+    wordDisplay.replaceChildren();
+    if (!wordDraft) {
+      const placeholder = document.createElement("span");
+      placeholder.className = "word-placeholder";
+      placeholder.textContent = "下の文字をタップ！";
+      wordDisplay.appendChild(placeholder);
+    } else {
+      [...wordDraft].forEach((letter) => {
+        const span = document.createElement("span");
+        span.className = "word-letter";
+        span.textContent = letter.toUpperCase();
+        wordDisplay.appendChild(span);
+      });
+    }
+    $("backspace-btn").disabled = !playing || wordDraft.length === 0;
+    $("clear-btn").disabled = !playing || wordDraft.length === 0;
+    $("submit-btn").disabled = !playing || wordDraft.length === 0;
+  }
+
+  function renderKeyboard() {
+    keyboard.replaceChildren();
+    letters.forEach((letter, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "letter-key";
+      button.textContent = letter;
+      button.disabled = !playing;
+      button.setAttribute("aria-label", letter + " を追加");
+      button.dataset.index = String(index);
+      button.addEventListener("click", () => addLetter(letter));
+      keyboard.appendChild(button);
+    });
+  }
+
+  function addLetter(letter) {
+    if (!playing) return;
+    if (wordDraft.length >= 30) {
+      showMessage("これ以上は入力できないよ。", "bad");
+      return;
+    }
+    wordDraft += letter.toLowerCase();
+    updateDraftDisplay();
+    showMessage("単語を作成中…", "");
+  }
+
+  function removeLastLetter() {
+    if (!playing || !wordDraft) return;
+    wordDraft = wordDraft.slice(0, -1);
+    updateDraftDisplay();
+  }
+
+  function clearWord() {
+    if (!playing) return;
+    wordDraft = "";
+    updateDraftDisplay();
+  }
+
   function updateTimer() {
+    if (!playing) return;
     const remaining = Math.max(0, deadline - Date.now());
     const nextSeconds = Math.ceil(remaining / 1000);
     if (nextSeconds !== seconds) {
       seconds = nextSeconds;
-      $("time-value").textContent = seconds;
+      $("time-value").textContent = String(seconds);
     }
-    const percent = (remaining / ROUND_MS) * 100;
-    timerBar.style.width = percent + "%";
+    timerBar.style.width = (remaining / ROUND_MS * 100) + "%";
     timerTrack.setAttribute("aria-valuenow", String(seconds));
     if (remaining <= 0) endGame();
   }
 
   function addAcceptedWord(word, points) {
-    const empty = acceptedWordsEl.querySelector(".empty-words");
+    const container = $("accepted-words");
+    const empty = container.querySelector(".empty-words");
     if (empty) empty.remove();
 
     const chip = document.createElement("span");
@@ -109,110 +155,40 @@
     const pointText = document.createElement("b");
     pointText.textContent = "+" + points;
     chip.append(wordText, pointText);
-    acceptedWordsEl.prepend(chip);
+    container.prepend(chip);
   }
 
-  async function loadDictionary() {
-    try {
-      const response = await fetch("dictionary.txt", { cache: "force-cache" });
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      const text = await response.text();
-      text.split(/\r?\n/).forEach((line) => {
-        const word = line.trim().toLowerCase();
-        if (/^[a-z]{3,}$/.test(word)) dictionary.add(word);
-      });
-      if (dictionary.size < 1000) {
-        throw new Error("辞書の単語数が少なすぎます: " + dictionary.size);
-      }
-      dictionaryReady = true;
-      dictionaryStatus.textContent = "辞書 " + dictionary.size.toLocaleString() + "語";
-      startBtn.disabled = false;
-      startBtn.querySelector(".button-label").textContent = "ゲームスタート";
-      showMessage("辞書の準備完了！スタートを押して挑戦しよう。", "good");
-    } catch (error) {
-      dictionaryStatus.textContent = "辞書の読み込みに失敗";
-      startBtn.disabled = true;
-      startBtn.querySelector(".button-label").textContent = "辞書を読み込めません";
-      showMessage("辞書ファイルを読み込めなかったよ。GitHub Pagesの公開状態を確認してね。", "bad");
-      console.error("Dictionary load error:", error);
-    }
-  }
-
-  function startGame() {
-    if (!dictionaryReady || playing) return;
-    clearInterval(timerId);
-
-    letters = makeLetters();
-    seenWords = new Set();
-    acceptedWords = [];
-    score = 0;
-    newRecordThisRound = false;
-    seconds = 30;
-    playing = true;
-    deadline = Date.now() + ROUND_MS;
-
-    renderLetters();
-    updateStats();
-    $("time-value").textContent = "30";
-    timerBar.style.width = "100%";
-    timerTrack.setAttribute("aria-valuenow", "30");
-    acceptedWordsEl.replaceChildren();
-    const empty = document.createElement("span");
-    empty.className = "empty-words";
-    empty.textContent = "正解した単語がここに並ぶよ。";
-    acceptedWordsEl.appendChild(empty);
-
-    $("result-panel").hidden = true;
-    $("new-record").hidden = true;
-    startBtn.disabled = true;
-    startBtn.querySelector(".button-label").textContent = "ゲーム中…";
-    input.disabled = false;
-    submitBtn.disabled = false;
-    input.value = "";
-    showMessage("スタート！英単語を入力してEnter！", "good");
-
-    // Focus is called directly from the start-button interaction for mobile keyboards.
-    input.focus();
-    timerId = setInterval(updateTimer, 100);
-  }
-
-  function isAllowedByLetters(word) {
-    const available = new Set(letters.map((letter) => letter.toLowerCase()));
-    // A given tile may be reused any number of times inside one word.
-    return [...word].every((character) => available.has(character));
-  }
-
-  function submitWord(event) {
-    event.preventDefault();
+  function submitWord() {
     if (!playing) return;
-
     if (Date.now() >= deadline) {
       endGame();
       return;
     }
-
-    const word = input.value.trim().toLowerCase();
-    input.value = "";
-    input.focus();
-
-    if (!/^[a-z]+$/.test(word)) {
-      showMessage("英語のアルファベットだけで入力してね。", "bad");
+    const word = wordDraft.toLowerCase();
+    if (!word) {
+      showMessage("先に下の文字をタップして単語を作ってね。", "bad");
       return;
     }
     if (word.length < 3) {
       showMessage("3文字以上の単語が必要だよ。", "bad");
       return;
     }
-    if (!isAllowedByLetters(word)) {
+    // Reusing one of the eight given letter types is intentionally unlimited.
+    const available = new Set(letters.map((letter) => letter.toLowerCase()));
+    if (![...word].every((letter) => available.has(letter))) {
       showMessage("配られた8種類の文字だけで作ってね！", "bad");
       return;
     }
     if (seenWords.has(word)) {
       showMessage("その単語はもう使ったよ。別の単語を探そう！", "bad");
+      wordDraft = "";
+      updateDraftDisplay();
       return;
     }
     if (!dictionary.has(word)) {
       showMessage("辞書に見つからなかったよ。別の単語を試してね。", "bad");
+      wordDraft = "";
+      updateDraftDisplay();
       return;
     }
 
@@ -226,8 +202,64 @@
       saveBestScore(bestScore);
     }
     addAcceptedWord(word, points);
+    wordDraft = "";
+    updateDraftDisplay();
     updateStats();
     showMessage("正解！ " + word + "  +" + points + "点", "good");
+  }
+
+  async function loadDictionary() {
+    try {
+      const response = await fetch("dictionary.txt", { cache: "force-cache" });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const text = await response.text();
+      text.split(/\r?\n/).forEach((line) => {
+        const word = line.trim().toLowerCase();
+        if (/^[a-z]{3,}$/.test(word)) dictionary.add(word);
+      });
+      if (dictionary.size < 1000) throw new Error("辞書の単語数が少なすぎます");
+      dictionaryReady = true;
+      dictionaryStatus.textContent = dictionary.size.toLocaleString() + "語収録";
+      $("start-btn").disabled = false;
+      $("start-label").textContent = "ゲームスタート";
+    } catch (error) {
+      dictionaryStatus.textContent = "辞書エラー";
+      $("start-label").textContent = "辞書を読み込めません";
+      showMessage("辞書を読み込めなかったよ。通信状態を確認してね。", "bad");
+      console.error("Dictionary load error:", error);
+    }
+  }
+
+  function startGame() {
+    if (!dictionaryReady || playing) return;
+    clearInterval(timerId);
+    letters = makeLetters();
+    wordDraft = "";
+    seenWords = new Set();
+    acceptedWords = [];
+    score = 0;
+    seconds = 30;
+    newRecordThisRound = false;
+    deadline = Date.now() + ROUND_MS;
+    playing = true;
+
+    $("result-panel").hidden = true;
+    $("ready-panel").hidden = true;
+    $("play-area").hidden = false;
+    $("time-value").textContent = "30";
+    timerBar.style.width = "100%";
+    timerTrack.setAttribute("aria-valuenow", "30");
+    $("accepted-words").replaceChildren();
+    const empty = document.createElement("span");
+    empty.className = "empty-words";
+    empty.textContent = "正解した単語がここに並ぶよ。";
+    $("accepted-words").appendChild(empty);
+
+    renderKeyboard();
+    updateDraftDisplay();
+    updateStats();
+    showMessage("下の文字をタップして単語を作ろう。", "good");
+    timerId = setInterval(updateTimer, 80);
   }
 
   function endGame() {
@@ -239,40 +271,56 @@
     $("time-value").textContent = "0";
     timerBar.style.width = "0%";
     timerTrack.setAttribute("aria-valuenow", "0");
-    input.disabled = true;
-    submitBtn.disabled = true;
-    startBtn.disabled = false;
-    startBtn.querySelector(".button-label").textContent = "もう一度プレイ";
+    renderKeyboard();
+    updateDraftDisplay();
 
-    $("final-score").textContent = score;
+    $("final-score").textContent = String(score);
     $("final-summary").textContent = acceptedWords.length + "個の単語を作ったよ！";
     $("new-record").hidden = !newRecordThisRound;
 
-    const wordBox = $("final-words");
-    wordBox.replaceChildren();
+    const finalWords = $("final-words");
+    finalWords.replaceChildren();
     if (acceptedWords.length === 0) {
-      const empty = document.createElement("p");
+      const empty = document.createElement("span");
+      empty.className = "empty-words";
       empty.textContent = "次は1つでも単語を見つけてみよう！";
-      empty.className = "feedback";
-      wordBox.appendChild(empty);
+      finalWords.appendChild(empty);
     } else {
       acceptedWords.forEach(({ word, points }) => {
         const chip = document.createElement("span");
-        chip.className = "word-chip";
+        chip.className = "final-word";
         chip.textContent = word + " (+" + points + ")";
-        wordBox.appendChild(chip);
+        finalWords.appendChild(chip);
       });
     }
-    updateStats();
+
+    $("play-area").hidden = true;
     $("result-panel").hidden = false;
-    $("result-panel").scrollIntoView({ behavior: "smooth", block: "start" });
-    showMessage("ゲーム終了！おつかれさま。");
+    updateStats();
   }
 
-  startBtn.addEventListener("click", startGame);
+  $("start-btn").addEventListener("click", startGame);
   $("again-btn").addEventListener("click", startGame);
-  form.addEventListener("submit", submitWord);
-  startBtn.disabled = true;
-  $("best-score").textContent = bestScore;
+  $("submit-btn").addEventListener("click", submitWord);
+  $("backspace-btn").addEventListener("click", removeLastLetter);
+  $("clear-btn").addEventListener("click", clearWord);
+
+  document.addEventListener("keydown", (event) => {
+    if (!playing) return;
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitWord();
+    } else if (event.key === "Backspace") {
+      event.preventDefault();
+      removeLastLetter();
+    } else if (event.key === "Escape") {
+      clearWord();
+    } else if (/^[a-zA-Z]$/.test(event.key)) {
+      const letter = event.key.toUpperCase();
+      if (letters.includes(letter)) addLetter(letter);
+    }
+  });
+
+  $("best-score").textContent = String(bestScore);
   loadDictionary();
 })();
