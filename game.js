@@ -30,6 +30,7 @@
   let deadline = 0;
   let playing = false;
   let dictionaryReady = false;
+  let newRecordThisRound = false;
 
   function readBestScore() {
     try {
@@ -145,6 +146,7 @@
     seenWords = new Set();
     acceptedWords = [];
     score = 0;
+    newRecordThisRound = false;
     seconds = 30;
     playing = true;
     deadline = Date.now() + ROUND_MS;
@@ -220,6 +222,7 @@
     acceptedWords.push({ word, points });
     if (score > bestScore) {
       bestScore = score;
+      newRecordThisRound = true;
       saveBestScore(bestScore);
     }
     addAcceptedWord(word, points);
@@ -243,7 +246,7 @@
 
     $("final-score").textContent = score;
     $("final-summary").textContent = acceptedWords.length + "個の単語を作ったよ！";
-    $("new-record").hidden = !(score > 0 && score >= bestScore && bestScore > 0);
+    $("new-record").hidden = !newRecordThisRound;
 
     const wordBox = $("final-words");
     wordBox.replaceChildren();
