@@ -1,0 +1,27 @@
+DICTIONARY DATA CREDITS AND LICENSE
+
+The dictionary.txt file is derived from the default English word list in:
+https://github.com/neopass/wordlist
+
+The source project describes its default list as an approximately 86,000-word English list generated from SCOWL and related additions. This project filters the source to unique lowercase alphabetic entries of 3 or more letters.
+
+SCOWL WORD-LIST PERMISSION NOTICE
+
+Copyright 2000-2016 by Kevin Atkinson
+
+Permission to use, copy, modify, distribute and sell these word
+lists, the associated scripts, the output created from the scripts,
+and its documentation for any purpose is hereby granted without fee,
+provided that the above copyright notice appears in all copies and
+that both that copyright notice and this permission notice appear in
+supporting documentation. Kevin Atkinson makes no representations
+about the suitability of this array for any purpose. It is provided
+"as is" without express or implied warranty.
+
+Source project:
+https://github.com/neopass/wordlist
+
+SCOWL project:
+https://wordlist.aspell.net/
+
+The game includes this notice to preserve the upstream word-list attribution.
