@@ -76,7 +76,7 @@
   function makeLetters() {
     const vowels = shuffle(VOWELS).slice(0, VOWEL_COUNT);
     const consonants = shuffle(CONSONANTS).slice(0, CONSONANT_COUNT);
-    return shuffle([...vowels, ...consonants]);
+    return [...vowels, ...consonants].sort();
   }
 
   function showMessage(text, kind = "") {
