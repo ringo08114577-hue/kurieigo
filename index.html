@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>クリエイゴ | Alphabet Rush</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand-mark" aria-hidden="true">Aa</div>
+      <div><p class="eyebrow">WORD CHALLENGE</p><h1>クリエイゴ</h1></div>
+      <div class="top-badge">30 SEC</div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">MAKE WORDS. BEAT THE CLOCK.</p>
+      <h2>8文字から、いくつ単語を作れる？</h2>
+      <p class="sub">配られた文字だけを使って英単語を作ろう。同じ文字は単語の中で何回使ってもOK！</p>
+    </section>
+
+    <section class="stats" aria-label="ゲーム状況">
+      <div class="stat"><span>のこり時間</span><strong id="time">30<span class="unit">秒</span></strong></div>
+      <div class="stat"><span>スコア</span><strong id="score">0</strong></div>
+      <div class="stat"><span>単語数</span><strong id="word-count">0</strong></div>
+    </section>
+
+    <section class="play-panel">
+      <div class="panel-heading"><h3>YOUR LETTERS</h3><span id="letter-note">母音2文字 + 子音6文字</span></div>
+      <div id="letters" class="letters" aria-label="配られたアルファベット">
+        <span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span><span class="letter placeholder">?</span>
+      </div>
+
+      <button id="start-btn" class="primary-btn">ゲームスタート <span aria-hidden="true">→</span></button>
+
+      <form id="answer-form" class="answer-form">
+        <label for="word-input">英単語を入力</label>
+        <div class="input-row">
+          <input id="word-input" type="text" placeholder="例：apple" autocomplete="off" autocapitalize="none" spellcheck="false" disabled>
+          <button id="submit-btn" type="submit" disabled>決定</button>
+        </div>
+        <p id="feedback" class="feedback" aria-live="polite">スタートを押すとゲームが始まるよ。</p>
+      </form>
+
+      <div class="rules">
+        <h3>ルール</h3>
+        <ul>
+          <li>30秒で、3文字以上の英単語をできるだけ多く作る。</li>
+          <li>使えるのは配られた8種類の文字。単語内では同じ文字を何度使ってもOK。</li>
+          <li>同じ単語で2回得点することはできない。</li>
+          <li>辞書に登録され、文字条件も満たした単語だけが有効。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="result-panel" id="result-panel" hidden>
+      <p class="eyebrow">TIME'S UP</p>
+      <h2>ゲーム終了！</h2>
+      <p class="result-score"><span id="final-score">0</span><small>点</small></p>
+      <p id="final-summary"></p>
+      <h3>今回の単語</h3>
+      <div id="final-words" class="word-list"></div>
+      <button id="again-btn" class="primary-btn">もう一度プレイ ↻</button>
+    </section>
+
+    <footer>クリエイゴ · English Word Game <span id="dictionary-status">辞書を確認中…</span></footer>
+  </main>
+</body>
+</html>
