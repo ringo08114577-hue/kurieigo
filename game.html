@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261102-modes">
-  <script src="game.js?v=20261102-modes" defer></script>
+  <link rel="stylesheet" href="style.css?v=20261102-word-examples">
+  <script src="game.js?v=20261102-word-examples" defer></script>
 </head>
 <body class="game-page">
   <main class="game-shell">
@@ -75,6 +75,13 @@
         <p class="result-score"><span id="final-score">0</span><small>点</small></p>
         <p id="final-summary" class="final-summary"></p>
         <div id="new-record" class="new-record" hidden>NEW BEST SCORE!</div>
+        <section class="possible-words-section">
+          <h2>今回の文字</h2>
+          <p id="final-letters" class="final-letters"></p>
+          <h2>この文字で作れる単語の例</h2>
+          <p class="possible-words-note">長い単語から最大15個表示。作成済みの単語には印がつくよ。</p>
+          <div id="possible-words" class="possible-words"></div>
+        </section>
         <h2>今回の単語</h2>
         <div id="final-words" class="final-words"></div>
         <button id="again-btn" class="main-action" type="button">
