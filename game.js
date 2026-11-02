@@ -15,7 +15,12 @@
   const VOWEL_COUNT = Math.round(LETTER_COUNT / 4);
   const CONSONANT_COUNT = LETTER_COUNT - VOWEL_COUNT;
   const BEST_KEY = "creigeo-best-score-" + LETTER_COUNT + "-" + ROUND_SECONDS;
-  const POINTS = (length) => length < 3 ? 0 : 2 * length - 5;
+  const POINTS = (length) => {
+    if (length < 3) return 0;
+    if (length <= 5) return 2 * length - 5;
+    // Longer words get progressively larger bonuses.
+    return Math.floor((length * length - 5 * length + 10) / 2);
+  };
 
   const keyboard = $("letter-keyboard");
   const wordDisplay = $("word-display");
@@ -278,6 +283,41 @@
     timerId = setInterval(updateTimer, 80);
   }
 
+  function findPossibleWords() {
+    const available = new Set(letters.map((letter) => letter.toLowerCase()));
+    return [...dictionary]
+      .filter((word) => word.length >= 3 && [...word].every((letter) => available.has(letter)))
+      .sort((a, b) => b.length - a.length || b.localeCompare(a))
+      .slice(0, 15);
+  }
+
+  function renderPossibleWords() {
+    const container = $("possible-words");
+    container.replaceChildren();
+    const examples = findPossibleWords();
+    if (examples.length === 0) {
+      const empty = document.createElement("span");
+      empty.className = "empty-words";
+      empty.textContent = "この文字で作れる単語が見つからなかったよ。";
+      container.appendChild(empty);
+      return;
+    }
+    examples.forEach((word) => {
+      const chip = document.createElement("span");
+      chip.className = "possible-word";
+      const wordText = document.createElement("span");
+      wordText.textContent = word;
+      const pointsText = document.createElement("b");
+      pointsText.textContent = "+" + POINTS(word.length) + "点";
+      chip.append(wordText, pointsText);
+      if (seenWords.has(word)) {
+        chip.classList.add("already-found");
+        chip.title = "今回すでに作成した単語";
+      }
+      container.appendChild(chip);
+    });
+  }
+
   function endGame() {
     if (!playing) return;
     playing = false;
@@ -293,6 +333,8 @@
 
     $("final-score").textContent = String(score);
     $("final-summary").textContent = acceptedWords.length + "個の単語を作ったよ！";
+    $("final-letters").textContent = letters.join(" · ");
+    renderPossibleWords();
     $("new-record").hidden = !newRecordThisRound;
 
     const finalWords = $("final-words");
