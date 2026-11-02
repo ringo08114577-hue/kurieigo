@@ -339,7 +339,7 @@
   });
 
   $("mode-label").textContent = LETTER_COUNT + "文字 · " + ROUND_SECONDS + "秒";
-  $("mode-description").textContent = LETTER_COUNT + "文字が配られて、" + ROUND_SECONDS + "秒のチャレンジが始まるよ。";
+  $("mode-description").textContent = "母音" + VOWEL_COUNT + "文字・子音" + CONSONANT_COUNT + "文字、合計" + LETTER_COUNT + "文字が配られて、" + ROUND_SECONDS + "秒のチャレンジが始まるよ。";
   $("time-value").textContent = String(ROUND_SECONDS);
   timerTrack.setAttribute("aria-valuemax", String(ROUND_SECONDS));
   timerTrack.setAttribute("aria-valuenow", String(ROUND_SECONDS));
