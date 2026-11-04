@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101426">
+  <meta name="description" content="クリエイゴのゲーム紹介とプレイ設定。">
+  <title>クリエイゴ | ゲーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20261104-game-hub">
+  <script src="home.js?v=20261104-game-hub" defer></script>
+</head>
+<body class="home-page">
+  <main class="home-shell">
+    <header class="top home-top">
+      <div class="brand-mark" aria-hidden="true">Aa</div>
+      <div class="brand-copy">
+        <p class="eyebrow">WORD GAME</p>
+        <h1>クリエイゴ</h1>
+      </div>
+      <a class="top-badge" href="index.html">← GAME HUB</a>
+    </header>
+
+    <section class="home-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THINK FAST. MAKE WORDS.</p>
+        <h2>ひらめきで、<br><span>英単語をつくれ。</span></h2>
+        <p class="home-lead">ランダムに配られるアルファベットを組み合わせて、制限時間内にできるだけ多くの英単語を作ろう。文字数と時間を選んで挑戦！</p>
+        <section class="mode-selectors" aria-label="ゲーム設定">
+          <div class="mode-group">
+            <div class="mode-heading"><strong>アルファベットの数</strong><span>LETTER COUNT</span></div>
+            <div class="choice-row" id="letter-options">
+              <button class="mode-option is-selected" type="button" data-letters="8" aria-pressed="true">8<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="10" aria-pressed="false">10<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="12" aria-pressed="false">12<span>文字</span></button>
+              <button class="mode-option" type="button" data-letters="14" aria-pressed="false">14<span>文字</span></button>
+            </div>
+          </div>
+          <div class="mode-group">
+            <div class="mode-heading"><strong>制限時間</strong><span>TIME LIMIT</span></div>
+            <div class="choice-row" id="time-options">
+              <button class="mode-option is-selected" type="button" data-time="30" aria-pressed="true">30<span>秒</span></button>
+              <button class="mode-option" type="button" data-time="45" aria-pressed="false">45<span>秒</span></button>
+              <button class="mode-option" type="button" data-time="60" aria-pressed="false">60<span>秒</span></button>
+            </div>
+          </div>
+        </section>
+        <a id="home-start-link" class="home-start-btn" href="game.html?letters=8&amp;time=30">
+          <span><small>READY TO PLAY?</small><strong>この設定でゲーム開始</strong></span>
+          <span class="home-start-arrow" aria-hidden="true">→</span>
+        </a>
+        <div class="home-best">この設定の最高得点 <strong id="home-best-score">0</strong><span>POINTS</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-glow"></div>
+        <div class="art-tile tile-a">A</div>
+        <div class="art-tile tile-r">R</div>
+        <div class="art-tile tile-t">T</div>
+        <div class="art-tile tile-e">E</div>
+        <div class="art-word">CREATE<span>!</span></div>
+        <div class="art-caption">FIND YOUR WORD</div>
+      </div>
+    </section>
+
+    <section class="home-info">
+      <div class="section-heading">
+        <p class="eyebrow">HOW TO PLAY</p>
+        <h2>遊び方はシンプル。</h2>
+      </div>
+      <div class="steps-grid">
+        <article class="info-card">
+          <span class="step-number">01</span>
+          <div class="info-icon">Aa</div>
+          <h3>文字がランダムに配られる</h3>
+          <p>8・10・12・14文字から選択。母音は約4分の1。文字数に合わせて母音と子音が配られる！</p>
+        </article>
+        <article class="info-card">
+          <span class="step-number">02</span>
+          <div class="info-icon">↗</div>
+          <h3>文字をタップして作る</h3>
+          <p>画面下の文字ボタンを押すと、選んだ文字が単語欄に追加されるよ。同じ文字も何度でも使える！</p>
+        </article>
+        <article class="info-card">
+          <span class="step-number">03</span>
+          <div class="info-icon">30</div>
+          <h3>時間内に得点を稼ぐ</h3>
+          <p>30・45・60秒から選択。辞書にある3文字以上の単語を完成させよう。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-scoring">
+      <div>
+        <p class="eyebrow">SCORE SYSTEM</p>
+        <h2>長い単語ほど高得点。</h2>
+        <p>9文字以上は、1文字増えるごとに2点追加されるよ。</p>
+      </div>
+      <div class="home-score-grid">
+        <span>3文字 <b>1点</b></span>
+        <span>4文字 <b>3点</b></span>
+        <span>5文字 <b>5点</b></span>
+        <span>6文字 <b>7点</b></span>
+        <span>7文字 <b>9点</b></span>
+        <span>8文字 <b>11点</b></span>
+      </div>
+    </section>
+
+    <footer class="home-footer">
+      <span>クリエイゴ · ENGLISH WORD GAME</span>
+      <span>MAKE EVERY SECOND COUNT.</span>
+    </footer>
+  </main>
+</body>
+</html>
